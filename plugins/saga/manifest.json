@@ -1,0 +1,485 @@
+{
+  "schema": "opencode-plugin-port.v1",
+  "name": "saga",
+  "version": "0.131.1+opencode.20260813204539",
+  "status": "proof-port",
+  "lineage": {
+    "source_repo": "infiquetra/infiquetra-claude-plugins",
+    "source_commit": "972cc50ba8799d8d4663b893e008bb1bf318d4d7",
+    "source_version": "0.131.1",
+    "ported_at": "2026-08-13T20:45:39.721617+00:00"
+  },
+  "inventory": {
+    "skills": [
+      "brainstorm",
+      "code-review",
+      "delegation-audit",
+      "doc-review",
+      "fleet-doctor",
+      "founder-review",
+      "handoff",
+      "ideate",
+      "investigate",
+      "loop",
+      "office-hours",
+      "optimize",
+      "outcome",
+      "plan",
+      "promote",
+      "pulse",
+      "qa",
+      "resume",
+      "retro",
+      "spec",
+      "strategy",
+      "work"
+    ],
+    "commands": [
+      "brainstorm",
+      "ceo-review",
+      "code-review",
+      "doc-review",
+      "engines",
+      "fleet-doctor",
+      "founder-review",
+      "handoff",
+      "ideate",
+      "investigate",
+      "loop",
+      "office-hours",
+      "optimize",
+      "outcome",
+      "plan",
+      "promote",
+      "pulse",
+      "qa",
+      "resume",
+      "retro",
+      "spec",
+      "strategy",
+      "tier",
+      "work"
+    ],
+    "agents": [
+      "mechanical-executor",
+      "readonly-verifier"
+    ],
+    "copied_plugin_dirs": [
+      "scripts",
+      "references",
+      "docs",
+      "hooks"
+    ],
+    "hook_bridges": [
+      "saga-hooks.ts"
+    ]
+  },
+  "transforms": {
+    "skills": {
+      "brainstorm": [
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/skills/ideate/references/convergence-and-partnership.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/skills/brainstorm/references/requirements-sections.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/gate-divergence-instrumentation.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "ToolSearch->question",
+        "AskUserQuestion->question"
+      ],
+      "code-review": [
+        "SkillRef->name:brainstorm",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/sandbox-spawn-sites.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts/status_card.py",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "ToolSearch->question",
+        "WebSearch->websearch",
+        "AskUserQuestion->question"
+      ],
+      "delegation-audit": [
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts"
+      ],
+      "doc-review": [
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/rubrics/{idea,spec,issue}/{core,extras}/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/formatting-style.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "AskUserQuestion->question"
+      ],
+      "fleet-doctor": [],
+      "founder-review": [
+        "SkillRef->name:brainstorm",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/gate-divergence-instrumentation.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/gate-divergence-instrumentation.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/",
+        "ToolSearch->question",
+        "WebSearch->websearch",
+        "AskUserQuestion->question"
+      ],
+      "handoff": [
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts/deploy_handoff.py",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts"
+      ],
+      "ideate": [
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/skills/ideate/references/convergence-and-partnership.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/skills/ideate/references/convergence-and-partnership.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/skills/ideate/references/ideation-artifact.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/formatting-style.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "ToolSearch->question",
+        "AskUserQuestion->question"
+      ],
+      "investigate": [
+        "SkillRef->name:brainstorm",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/sandbox-spawn-sites.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/gate-divergence-instrumentation.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "ToolSearch->question",
+        "AskUserQuestion->question"
+      ],
+      "loop": [
+        "SkillRef->name:brainstorm",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/gate-divergence-instrumentation.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts/status_card.py",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "ToolSearch->question",
+        "AskUserQuestion->question"
+      ],
+      "office-hours": [
+        "SkillRef->name:brainstorm",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/skills/office-hours/references/frame-diagnostic.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/skills/office-hours/references/frame-diagnostic.md",
+        "ToolSearch->question",
+        "AskUserQuestion->question"
+      ],
+      "optimize": [
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/",
+        "ToolSearch->question",
+        "AskUserQuestion->question"
+      ],
+      "outcome": [
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts/outcome.py",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts/status_card.py",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts/intent_envelope.py",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/intent-envelope.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/intent-envelope.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/gate-divergence-instrumentation.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "AskUserQuestion->question"
+      ],
+      "plan": [
+        "SkillRef->name:brainstorm",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/formatting-style.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/intent-envelope.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "ToolSearch->question",
+        "AskUserQuestion->question"
+      ],
+      "promote": [
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "ToolSearch->question",
+        "AskUserQuestion->question"
+      ],
+      "pulse": [
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts"
+      ],
+      "qa": [
+        "SkillRef->name:brainstorm",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/sandbox-spawn-sites.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts/status_card.py",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "ToolSearch->question",
+        "AskUserQuestion->question"
+      ],
+      "resume": [
+        "SkillRef->name:brainstorm",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts/status_card.py",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/sandbox-spawn-sites.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "ToolSearch->question",
+        "AskUserQuestion->question"
+      ],
+      "retro": [
+        "SkillRef->name:brainstorm",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/gate-divergence-instrumentation.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "ToolSearch->question",
+        "AskUserQuestion->question",
+        "DescriptionTruncated:1088->1018"
+      ],
+      "spec": [
+        "SkillRef->name:brainstorm",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/skills/loop/references/dispatch-table.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/skills/plan/references/interrogation.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/rubrics/spec/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/formatting-style.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts/",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts/",
+        "ToolSearch->question",
+        "AskUserQuestion->question"
+      ],
+      "strategy": [
+        "SkillRef->name:brainstorm",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/skills/loop/references/dispatch-table.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/formatting-style.md",
+        "ToolSearch->question",
+        "AskUserQuestion->question"
+      ],
+      "work": [
+        "SkillRef->name:brainstorm",
+        "SkillRef->name:handoff",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/intent-envelope.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/references/adjustment-envelope.md",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts/status_card.py",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "ToolSearch->question",
+        "AskUserQuestion->question"
+      ]
+    },
+    "commands": {
+      "brainstorm": [
+        "LoadReference->skill-tool:brainstorm"
+      ],
+      "ceo-review": [
+        "LoadReference->skill-tool:founder-review"
+      ],
+      "code-review": [
+        "LoadReference->skill-tool:code-review"
+      ],
+      "doc-review": [
+        "LoadReference->skill-tool:doc-review"
+      ],
+      "engines": [
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts"
+      ],
+      "fleet-doctor": [
+        "LoadReference->skill-tool:fleet-doctor",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts"
+      ],
+      "founder-review": [
+        "LoadReference->skill-tool:founder-review"
+      ],
+      "handoff": [
+        "LoadReference->skill-tool:handoff"
+      ],
+      "ideate": [
+        "LoadReference->skill-tool:ideate"
+      ],
+      "investigate": [
+        "LoadReference->skill-tool:investigate"
+      ],
+      "loop": [
+        "LoadReference->skill-tool:loop"
+      ],
+      "office-hours": [
+        "LoadReference->skill-tool:office-hours"
+      ],
+      "optimize": [
+        "LoadReference->skill-tool:optimize"
+      ],
+      "outcome": [
+        "LoadReference->skill-tool:outcome"
+      ],
+      "plan": [
+        "LoadReference->skill-tool:plan"
+      ],
+      "promote": [
+        "LoadReference->skill-tool:promote"
+      ],
+      "pulse": [
+        "LoadReference->skill-tool:pulse",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts"
+      ],
+      "qa": [
+        "LoadReference->skill-tool:qa"
+      ],
+      "resume": [
+        "LoadReference->skill-tool:resume"
+      ],
+      "retro": [
+        "LoadReference->skill-tool:retro"
+      ],
+      "spec": [
+        "LoadReference->skill-tool:spec"
+      ],
+      "strategy": [
+        "LoadReference->skill-tool:strategy"
+      ],
+      "tier": [
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts",
+        "PluginRootPath->env:SAGA_PLUGIN_ROOT/scripts"
+      ],
+      "work": [
+        "LoadReference->skill-tool:work"
+      ]
+    },
+    "agents": [
+      {
+        "name": "mechanical-executor",
+        "source_file": "mechanical-executor.md",
+        "model_tier": "haiku",
+        "mapped_model": "anthropic/claude-haiku-4-6",
+        "dropped_fields": [
+          "name",
+          "tools",
+          "model"
+        ]
+      },
+      {
+        "name": "readonly-verifier",
+        "source_file": "readonly-verifier.md",
+        "model_tier": "sonnet",
+        "mapped_model": "anthropic/claude-sonnet-4-6",
+        "dropped_fields": [
+          "name",
+          "tools",
+          "model"
+        ]
+      }
+    ],
+    "dropped_claude_dirs": [
+      ".claude-plugin",
+      "marketplace artifacts"
+    ]
+  },
+  "hooks": {
+    "bridged": {
+      "PreToolUse": [
+        "validate_json_hook.py",
+        "pre_push_gate_hook.py",
+        "team_spawn_residency_hook.py",
+        "delegation_tripwire_hook.py"
+      ],
+      "PostToolUse": [
+        "journal_nudge_hook.py"
+      ],
+      "SessionStart": [
+        "stale_main_session_hook.py",
+        "compact_spore_session_hook.py",
+        "ship_teardown.py",
+        "team_teardown_hook.py"
+      ],
+      "SessionEnd": [
+        "team_teardown_hook.py"
+      ],
+      "PreCompact": [
+        "precompact_spore_hook.py"
+      ]
+    },
+    "deferred": [
+      "delegation_stop_audit_hook.py"
+    ],
+    "deferred_reasons": {
+      "delegation_stop_audit_hook.py": "reads transcript_path (Claude JSONL transcript) which opencode does not produce, and fires on Stop/SubagentStop events that have no faithful opencode equivalent",
+      "Stop": "no opencode event mirrors Claude's Stop hook (post-response loop with re-prompt ability)",
+      "SubagentStop": "no opencode event mirrors per-subagent task completion"
+    }
+  }
+}

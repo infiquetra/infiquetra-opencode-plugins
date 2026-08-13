@@ -1,0 +1,17 @@
+{
+  "schema": "opencode-port-cycle.v1",
+  "plugin": "saga",
+  "source_commit": "972cc50ba8799d8d4663b893e008bb1bf318d4d7",
+  "source_version": "0.131.1",
+  "ported_at": "2026-08-13T20:45:39.722390+00:00",
+  "manifest_version": "0.131.1+opencode.20260813204539",
+  "skills": 22,
+  "commands": 24,
+  "agents": 2,
+  "copied_plugin_dirs": [
+    "scripts",
+    "references",
+    "docs",
+    "hooks"
+  ]
+}
