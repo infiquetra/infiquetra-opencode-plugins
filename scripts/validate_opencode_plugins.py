@@ -152,8 +152,11 @@ def check_hook_bridges(plugin: Path, manifest: dict[str, Any], violations: Viola
 
 def check_inventory(plugin: Path, manifest: dict[str, Any], violations: Violations) -> None:
     inventory = manifest.get("inventory", {})
-    actual_skills = sorted(
-        skill.name for skill in (plugin / "skills").iterdir() if (skill / "SKILL.md").is_file()
+    skills_dir = plugin / "skills"
+    actual_skills = (
+        sorted(skill.name for skill in skills_dir.iterdir() if (skill / "SKILL.md").is_file())
+        if skills_dir.is_dir()
+        else []
     )
     declared_skills = sorted(inventory.get("skills", []))
     if actual_skills != declared_skills:
@@ -206,15 +209,17 @@ def main() -> int:
         check_inventory(plugin, manifest, violations)
         check_hook_bridges(plugin, manifest, violations)
         check_leaks(plugin, violations)
-        for skill in (plugin / "skills").iterdir():
-            if (skill / "SKILL.md").is_file():
-                check_skill(skill, violations)
-                if skill.name in seen_skill_names:
-                    violations.add(
-                        f"skill name {skill.name!r} is claimed by both "
-                        f"{seen_skill_names[skill.name]} and {plugin.name}"
-                    )
-                seen_skill_names[skill.name] = plugin.name
+        skills_dir = plugin / "skills"
+        if skills_dir.is_dir():
+            for skill in skills_dir.iterdir():
+                if (skill / "SKILL.md").is_file():
+                    check_skill(skill, violations)
+                    if skill.name in seen_skill_names:
+                        violations.add(
+                            f"skill name {skill.name!r} is claimed by both "
+                            f"{seen_skill_names[skill.name]} and {plugin.name}"
+                        )
+                    seen_skill_names[skill.name] = plugin.name
         for command in (plugin / "commands").glob("*.md"):
             check_command(command, violations)
         for agent in (plugin / "agents").glob("*.md"):

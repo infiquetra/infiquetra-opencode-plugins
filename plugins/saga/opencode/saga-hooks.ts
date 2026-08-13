@@ -69,11 +69,11 @@ function buildToolInput(tool: string, args: any): Record<string, any> {
   }
 }
 
-function matchingEntries(eventName: string, toolName?: string): HookEntry[] {
+function matchingEntries(eventName: string, selector?: string): HookEntry[] {
   const matchers = hooksJson.hooks?.[eventName] ?? []
   const entries: HookEntry[] = []
   for (const group of matchers) {
-    if (group.matcher && (!toolName || !new RegExp(group.matcher).test(toolName))) {
+    if (group.matcher && (!selector || !new RegExp(group.matcher).test(selector))) {
       continue
     }
     for (const entry of group.hooks) {
@@ -93,7 +93,7 @@ function runOne(entry: HookEntry, payload: Record<string, any>): Promise<string>
   return new Promise((resolve) => {
     const child = spawn("bash", ["-c", command], {
       cwd: (payload.cwd as string) ?? process.cwd(),
-      env: { ...process.env, CLAUDE_PLUGIN_ROOT: pluginRoot },
+      env: { ...process.env, CLAUDE_PLUGIN_ROOT: pluginRoot, SAGA_PLUGIN_ROOT: pluginRoot },
     })
     let stdout = ""
     let stderr = ""
@@ -136,7 +136,11 @@ async function runHooks(
   toolName?: string,
   blocking = false,
 ): Promise<void> {
-  const entries = matchingEntries(eventName, toolName)
+  const selector =
+    toolName ??
+    (payload.source as string | undefined) ??
+    (payload.trigger as string | undefined)
+  const entries = matchingEntries(eventName, selector)
   for (const entry of entries) {
     const reason = await runOne(entry, payload)
     if (reason && blocking) {

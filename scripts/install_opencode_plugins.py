@@ -95,6 +95,10 @@ def install(config_dir: Path, selected: list[str]) -> int:
         if link.is_symlink():
             current = os.readlink(link)
             if os.path.abspath(current) == str(target):
+                record = {"target": str(target), "link": str(link)}
+                if (str(link), str(target)) not in existing:
+                    state["links"].append(record)
+                    existing.add((str(link), str(target)))
                 continue
             errors.append(f"link exists with different target: {link} -> {current}")
             continue
@@ -105,6 +109,7 @@ def install(config_dir: Path, selected: list[str]) -> int:
         record = {"target": str(target), "link": str(link)}
         if (str(link), str(target)) not in existing:
             state["links"].append(record)
+            existing.add((str(link), str(target)))
         created.append(record)
 
     save_state(config_dir, state)
@@ -137,8 +142,15 @@ def status(config_dir: Path) -> int:
         print(f"nothing installed in {config_dir}")
         return 0
     for link in sorted(links):
-        marker = "OK" if link.is_symlink() else "BROKEN/MISSING"
-        target = os.readlink(link) if link.is_symlink() else "?"
+        if link.is_symlink() and link.exists():
+            marker = "OK"
+            target = os.readlink(link)
+        elif link.is_symlink():
+            marker = "BROKEN"
+            target = os.readlink(link)
+        else:
+            marker = "MISSING"
+            target = "?"
         print(f"  {marker:14} {link.name:32} -> {target}")
     print(f"{len(links)} links recorded")
     return 0
@@ -161,10 +173,11 @@ def main() -> None:
     )
     args = parser.parse_args()
 
+    if args.command == "install":
+        args.config.mkdir(parents=True, exist_ok=True)
+        raise SystemExit(install(args.config, args.plugins))
     if not args.config.is_dir():
         raise SystemExit(f"config directory not found: {args.config}")
-    if args.command == "install":
-        raise SystemExit(install(args.config, args.plugins))
     if args.command == "uninstall":
         raise SystemExit(uninstall(args.config))
     raise SystemExit(status(args.config))

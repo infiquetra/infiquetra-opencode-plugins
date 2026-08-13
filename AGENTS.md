@@ -10,11 +10,11 @@ the opencode-ready plugin surface (currently `saga` as the proof port). See
 ## Commands
 
 ```bash
-python3 scripts/validate_opencode_plugins.py
-python3 scripts/install_opencode_plugins.py status
-python3 -m pytest
-python3 -m ruff check .
-python3 -m mypy scripts/
+uv run python scripts/validate_opencode_plugins.py
+uv run python scripts/install_opencode_plugins.py status
+uv run pytest
+uv run ruff check .
+uv run mypy scripts/
 ```
 
 `scripts/validate_opencode_plugins.py` checks every ported plugin against its
