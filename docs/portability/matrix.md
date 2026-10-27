@@ -27,6 +27,10 @@ changes a plugin host boundary such as skills, scripts, MCP servers, command fil
 
 ## Notes
 
+- 2026-10-27: the Saga bridge supports both OpenCode 1's `server()` entrypoint
+  and OpenCode 2's `setup()` hook domains. OpenCode 2 may load the location
+  plugin after session creation; first activity also triggers the idempotent
+  startup hooks. See `plugins/saga/PORTABILITY.md` for behavior and tests.
 - 2026-08-13: `saga` 0.131.1 lands as the proof port (first cycle
   `docs/portability/ports/2026-08-13-saga.json`). Skills and commands were mechanically
   transformed; the hook bridge covers PreToolUse, PostToolUse (Bash), SessionStart,

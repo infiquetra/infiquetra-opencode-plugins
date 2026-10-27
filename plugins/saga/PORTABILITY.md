@@ -40,3 +40,19 @@ synthesize a transcript or opencode gains per-subagent completion events.
   resolves it. For file reads the agent should expand it before reading.
 - `question` replaces `AskUserQuestion`/`ToolSearch`; `websearch` replaces `WebSearch`.
   Channel-inline conventions that named Claude tool behavior were left as prose.
+
+## OpenCode 2
+
+The hook bridge exposes a V1 `server()` entrypoint and a V2 `setup()` entrypoint.
+For V2, shell creation, tool execution, compaction and server events are wired
+through their respective domains. Some V2 location plugins are loaded after the
+session is created, so the bridge also runs startup hooks on a session's first
+prompt, tool call or compaction. It keeps one in-flight startup per session and
+forgets the session after deletion. A resumed session may run these idempotent
+startup hooks again after a server restart. Failed V2 tool calls do not run the
+successful PostToolUse hooks.
+
+Run `uv run pytest tests/test_saga_hooks.py tests/test_saga_v2_runtime.py` for
+the isolated bridge checks. The V2 runtime test uses a local OpenCode 2 server
+with a temporary home and `resume=false`; it makes no model request. It skips
+when OpenCode 2 is unavailable and accepts `OPENCODE_V2_BIN` to select a binary.
