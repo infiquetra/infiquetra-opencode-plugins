@@ -217,4 +217,71 @@ const sagaHooks: Plugin = async ({ directory }) => {
   }
 }
 
-export default sagaHooks
+// V1 (1.18.29+) invokes server(); V2 invokes setup(). Both paths use the
+// same bridge logic while adapting each generation's hook event shape.
+export default {
+  id: "infiquetra.saga",
+  server: sagaHooks,
+  async setup(ctx: any) {
+    const directory = ctx.location.directory
+    const legacy = await sagaHooks({ directory } as any)
+    // V2 may load a location's plugins after the session.created event. Run
+    // startup on the first prompt/tool/compaction as well, and share the
+    // in-flight promise so concurrent hooks cannot run startup twice.
+    const started = new Map<string, Promise<void>>()
+    const ensureStarted = (sessionID: string): Promise<void> => {
+      if (!sessionID) return Promise.resolve()
+      const existing = started.get(sessionID)
+      if (existing) return existing
+      const startup = runHooks(
+        "SessionStart",
+        { session_id: sessionID, cwd: directory, source: "startup" },
+      ).catch((error: unknown) => {
+        started.delete(sessionID)
+        throw error
+      })
+      started.set(sessionID, startup)
+      return startup
+    }
+    await ctx.session.hook("prompt", async (event: any) => {
+      await ensureStarted(event.sessionID)
+    })
+    await ctx.shell.hook("create.before", (event: any) => {
+      legacy["shell.env"]!({} as any, { env: event.env } as any)
+    })
+    await ctx.tool.hook("execute.before", async (event: any) => {
+      await ensureStarted(event.sessionID)
+      await legacy["tool.execute.before"]!(
+        { tool: event.tool, sessionID: event.sessionID } as any,
+        { args: event.input } as any,
+      )
+    })
+    await ctx.tool.hook("execute.after", (event: any) => {
+      if (event.status !== "completed") return
+      legacy["tool.execute.after"]!(
+        { tool: event.tool, sessionID: event.sessionID, args: event.input } as any,
+        {} as any,
+      )
+    })
+    await ctx.session.hook("compaction", async (event: any) => {
+      await ensureStarted(event.sessionID)
+      legacy["experimental.session.compacting"]!({ sessionID: event.sessionID } as any, {} as any)
+    })
+    const controller = new AbortController()
+    void (async () => {
+      for await (const event of ctx.event.subscribe({ signal: controller.signal })) {
+        const properties = event.properties ?? {}
+        const sessionID = properties.sessionID ?? properties.info?.id ?? ""
+        if (event.type === "session.created") {
+          await ensureStarted(sessionID)
+        } else {
+          legacy.event!({ event } as any)
+          if (event.type === "session.deleted") started.delete(sessionID)
+        }
+      }
+    })().catch((error: unknown) => {
+      if (!controller.signal.aborted) console.error("[saga-hooks] event subscription failed", error)
+    })
+    return () => controller.abort()
+  },
+}
