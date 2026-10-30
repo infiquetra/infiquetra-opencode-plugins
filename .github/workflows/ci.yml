@@ -1,0 +1,137 @@
+name: Adapter CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: >-
+    ${{ github.workflow }}-${{ github.workflow_ref }}-${{
+      github.event_name == 'pull_request' && github.event.pull_request.number > 0 &&
+      github.workflow != '' && github.workflow_ref != '' && github.ref != '' &&
+      format('pr-{0}', github.event.pull_request.number) ||
+      format('run-{0}-{1}', github.run_id, github.run_attempt) }}
+  cancel-in-progress: >-
+    ${{ github.event_name == 'pull_request' && github.event.pull_request.number > 0 &&
+        github.workflow != '' && github.workflow_ref != '' && github.ref != '' }}
+
+jobs:
+  validate:
+    name: Adapter validation (Python 3.12)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Prepare isolated validation directories
+        timeout-minutes: 1
+        env:
+          CI_HOME: ${{ runner.temp }}/opencode-ci-home
+          DIAGNOSTICS: ${{ runner.temp }}/opencode-ci-diagnostics
+        run: |
+          umask 022
+          mkdir -p "$CI_HOME" "$DIAGNOSTICS"
+          {
+            echo "HOME=$CI_HOME"
+            echo "XDG_CONFIG_HOME=$CI_HOME/.config"
+            echo "XDG_DATA_HOME=$CI_HOME/.local/share"
+            echo "XDG_CACHE_HOME=$CI_HOME/.cache"
+            echo "XDG_STATE_HOME=$CI_HOME/.local/state"
+            echo "PYTHONNOUSERSITE=1"
+            echo "PYTHONDONTWRITEBYTECODE=1"
+            echo "CI_DIAGNOSTICS=$DIAGNOSTICS"
+          } >> "$GITHUB_ENV"
+
+      - name: Check declared validation inputs
+        timeout-minutes: 1
+        run: |
+          {
+            test -s uv.lock
+            test -s pyproject.toml
+            manifests=(plugins/*/manifest.json)
+            test -f "${manifests[0]}"
+            echo "Declared project, lockfile and plugin manifests present"
+          } 2>&1 | tee "$CI_DIAGNOSTICS/inputs.log"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5.4.2
+        timeout-minutes: 2
+        with:
+          version: "0.13.6"
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+          cache-suffix: uv-0.13.6-python-3.12
+          # Dependency data, metadata and source-built wheels; no installed environment.
+          cache-local-path: ${{ runner.temp }}/uv-cache
+          prune-cache: true
+
+      - name: Install Python and fresh locked development dependencies
+        timeout-minutes: 3
+        run: |
+          {
+            umask 022
+            uv python install 3.12
+            uv venv --clear --python 3.12 .venv
+            uv sync --locked --python 3.12
+            uv run --locked python --version
+          } 2>&1 | tee "$CI_DIAGNOSTICS/bootstrap.log"
+
+      - name: Validate plugin manifests and installed surface
+        timeout-minutes: 1
+        run: |
+          uv run --locked python scripts/validate_opencode_plugins.py 2>&1 | tee "$CI_DIAGNOSTICS/validator.log"
+
+      - name: Run the complete configured pytest suite
+        timeout-minutes: 2
+        run: |
+          uv run --locked python -m pytest -ra --durations=10 --junitxml="$CI_DIAGNOSTICS/pytest.xml" 2>&1 | tee "$CI_DIAGNOSTICS/pytest.log"
+          test -s "$CI_DIAGNOSTICS/pytest.xml"
+
+      - name: Ruff
+        timeout-minutes: 1
+        run: |
+          uv run --locked python -m ruff check . 2>&1 | tee "$CI_DIAGNOSTICS/ruff.log"
+
+      - name: Mypy scripts
+        timeout-minutes: 2
+        run: |
+          uv run --locked python -m mypy scripts/ 2>&1 | tee "$CI_DIAGNOSTICS/mypy.log"
+
+      - name: Bound diagnostic log tails
+        if: always()
+        timeout-minutes: 1
+        env:
+          CI_DIAGNOSTICS: ${{ runner.temp }}/opencode-ci-diagnostics
+          VALIDATION_STATUS: ${{ job.status }}
+        run: |
+          mkdir -p "$CI_DIAGNOSTICS"
+          printf 'Validation status before diagnostics: %s\n' "$VALIDATION_STATUS" > "$CI_DIAGNOSTICS/status.txt"
+          for name in inputs bootstrap validator pytest ruff mypy; do
+            log="$CI_DIAGNOSTICS/$name.log"
+            if [[ -f "$log" ]]; then
+              tail -c 65536 "$log" > "$log.tail"
+            fi
+          done
+
+      - name: Retain validation diagnostics
+        if: always()
+        timeout-minutes: 1
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: opencode-adapter-validation
+          path: |
+            ${{ runner.temp }}/opencode-ci-diagnostics/pytest.xml
+            ${{ runner.temp }}/opencode-ci-diagnostics/*.log.tail
+            ${{ runner.temp }}/opencode-ci-diagnostics/status.txt
+          if-no-files-found: error
+          retention-days: 7
