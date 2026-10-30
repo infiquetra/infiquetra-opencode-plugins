@@ -56,3 +56,20 @@ Run `uv run pytest tests/test_saga_hooks.py tests/test_saga_v2_runtime.py` for
 the isolated bridge checks. The V2 runtime test uses a local OpenCode 2 server
 with a temporary home and `resume=false`; it makes no model request. It skips
 when OpenCode 2 is unavailable and accepts `OPENCODE_V2_BIN` to select a binary.
+
+## Neutral Outcome fixtures
+
+The [2026-10-30 fixture-only cycle](../../docs/portability/ports/2026-10-30-saga-outcome-cross-runtime-fixtures.json)
+pins six producer-owned `outcome-cross-runtime/v1` fixtures to Claude commit
+`972cc50ba8799d8d4663b893e008bb1bf318d4d7`. OpenCode owns the test harness, which loads
+the bundled `scripts/outcome_compat.py` under an isolated module name and restores import
+state. Four cases validate and canonically serialize the original bytes; two cases reject
+an unknown field and an unsupported protocol range at their respective stages. Valid
+version-1 negotiation is also asserted.
+
+This cycle imports only repository test data. Regeneration, installation and host restart
+are not applicable to the unchanged installed surface and were not performed. Manifest,
+version, lineage, runtime and bridge behavior remain unchanged, including the inherited
+`RUNTIME_LABEL="claude"`. The CLI has no peer-envelope input, and these pure assertions do
+not prove authority transfer, protected handoff execution or host compatibility. Existing
+installer, transform, validator and bridge tests remain alongside the shared fixtures.

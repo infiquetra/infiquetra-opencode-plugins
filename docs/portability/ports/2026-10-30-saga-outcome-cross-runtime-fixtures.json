@@ -1,0 +1,194 @@
+{
+  "schema": "opencode-port-cycle.v1",
+  "scope": "test-fixtures-only",
+  "plugin": "saga",
+  "recorded_on": "2026-10-30",
+  "source_repository": "infiquetra/infiquetra-claude-plugins",
+  "source_commit": "972cc50ba8799d8d4663b893e008bb1bf318d4d7",
+  "source_version": "0.131.1",
+  "manifest_version": "0.131.1+opencode.20260813204539",
+  "baseline_commit": "3744096a8340db99df843faeb77826397c38ecd3",
+  "baseline_tree": "7fcaeeb49fd290b487be458f548ade712adc3833",
+  "copied_plugin_dirs": [],
+  "installed_surface_changed": false,
+  "custody": {
+    "producer": "Claude owns the versioned outcome-cross-runtime/v1 vocabulary, reference and fixture bytes.",
+    "consumer": "OpenCode owns this adapter test harness, assertions and scoped port record.",
+    "codex": "Codex owns its independent direct-port consumer; no implementation is copied from it."
+  },
+  "fixtures": [
+    {
+      "source_path": "tests/fixtures/outcome-cross-runtime/v1/canonical-status.json",
+      "target_path": "tests/fixtures/outcome-cross-runtime/v1/canonical-status.json",
+      "git_blob_oid": "e0d0f483f261bd323f93010f060bf1065df8f50d",
+      "sha256": "c56504f3901bec1d8f628a1304bf9f78b6a294450603bc22ce858e827a5d9e1d",
+      "bytes": 955,
+      "treatment": "unchanged-test-data",
+      "case_node_id": "tests/test_outcome_cross_runtime.py::test_fixture_round_trip[canonical-status.json]"
+    },
+    {
+      "source_path": "tests/fixtures/outcome-cross-runtime/v1/compatibility-halt.json",
+      "target_path": "tests/fixtures/outcome-cross-runtime/v1/compatibility-halt.json",
+      "git_blob_oid": "6862da3207951efd00a49b5bf6c55f5f68aa90da",
+      "sha256": "6c69db903a2f80afddcf99fd0cb7e6c540c047222c4af7ffb1933f98a472e54c",
+      "bytes": 237,
+      "treatment": "unchanged-test-data",
+      "case_node_id": "tests/test_outcome_cross_runtime.py::test_fixture_round_trip[compatibility-halt.json]"
+    },
+    {
+      "source_path": "tests/fixtures/outcome-cross-runtime/v1/discovery-envelope.json",
+      "target_path": "tests/fixtures/outcome-cross-runtime/v1/discovery-envelope.json",
+      "git_blob_oid": "f12596470d972612b89818e5e2092e1987b83de7",
+      "sha256": "03cf3ccb818bcf3c868208720f4736df065cfb6626f9c2a9526963943216e33d",
+      "bytes": 882,
+      "treatment": "unchanged-test-data",
+      "case_node_id": "tests/test_outcome_cross_runtime.py::test_fixture_round_trip[discovery-envelope.json]"
+    },
+    {
+      "source_path": "tests/fixtures/outcome-cross-runtime/v1/handoff-reference.json",
+      "target_path": "tests/fixtures/outcome-cross-runtime/v1/handoff-reference.json",
+      "git_blob_oid": "b35b34533b8fe1b7941d844c1a0621cc3409c67d",
+      "sha256": "108a2a624662b22eaa32e3953e2069004b9bd9525eeba62d39a7b27fccac887f",
+      "bytes": 431,
+      "treatment": "unchanged-test-data",
+      "case_node_id": "tests/test_outcome_cross_runtime.py::test_fixture_round_trip[handoff-reference.json]"
+    },
+    {
+      "source_path": "tests/fixtures/outcome-cross-runtime/v1/invalid/future-protocol-envelope.json",
+      "target_path": "tests/fixtures/outcome-cross-runtime/v1/invalid/future-protocol-envelope.json",
+      "git_blob_oid": "43b868a74a33f17b2145ab3f4e1a51023eff32f7",
+      "sha256": "7fe2b7c8a6031a82f9ca660a521b21e313b8ff4310fa08d049c61ac2e9560fd5",
+      "bytes": 795,
+      "treatment": "unchanged-test-data",
+      "case_node_id": "tests/test_outcome_cross_runtime.py::test_future_protocol_fixture_halts"
+    },
+    {
+      "source_path": "tests/fixtures/outcome-cross-runtime/v1/invalid/unknown-field-envelope.json",
+      "target_path": "tests/fixtures/outcome-cross-runtime/v1/invalid/unknown-field-envelope.json",
+      "git_blob_oid": "f8678fc5d3fda2f51bd25fcc19a626c5bd603993",
+      "sha256": "3fe491fa66463475efbd3acd9088696b21c69301eb9a31d05fb651d4561f1520",
+      "bytes": 964,
+      "treatment": "unchanged-test-data",
+      "case_node_id": "tests/test_outcome_cross_runtime.py::test_unknown_field_fixture_halts"
+    }
+  ],
+  "bundled_contract": {
+    "plugins/saga/scripts/outcome_compat.py": {
+      "git_blob_oid": "90af488aa57a4dcbe8fd9c1d042c1b208f1f6553",
+      "sha256": "26e229a7f630daa3ac1da962424cf229749bf721121ad7c9e1780993136d0cf6"
+    },
+    "plugins/saga/references/outcome-cross-runtime.md": {
+      "git_blob_oid": "b7bd42b09cd0f764bb62dcfbce1d3c643a576b03",
+      "sha256": "37ed3ebdbafb0896fdb8d9c49262f63178228d06070f6d30719f28e24a75a11f"
+    }
+  },
+  "consumer": {
+    "test_path": "tests/test_outcome_cross_runtime.py",
+    "expected_cases": 6,
+    "loader": "Repository file path, isolated module name, scoped sys.path and sys.modules restoration.",
+    "positive_assertion": "parse_strict_json -> matching bundled validator -> canonical_json plus newline encoded as UTF-8 equals the original fixture bytes.",
+    "additional_assertion": "The valid discovery protocol negotiates version 1, preventing an always-rejecting negotiation implementation from passing.",
+    "unknown_field_assertion": "Strict parsing succeeds; discovery structural validation raises CompatibilityHaltError with code schema-field-unknown.",
+    "future_version_assertion": "Strict parsing and structural validation succeed before negotiate raises CompatibilityHaltError with code protocol-version-skew.",
+    "oracle": "Pinned producer bytes and producer-defined rejection codes; no duplicated schema or expected JSON objects."
+  },
+  "runbook": {
+    "path": "docs/portability/claude-to-opencode-plugin-port-runbook.md",
+    "version": "1",
+    "approved_scope": "Fixture-only test-data import with adapter-owned tests; regeneration and installed-host restart are not applicable to unchanged installed behavior.",
+    "steps": {
+      "1_source_authority": "Pinned existing producer commit and exact Git blobs/SHA-256; retained primary-producer snapshot bytes verified against the pinned tree evidence.",
+      "2_conflicts": "No skill, command or agent added; installed inventory unchanged.",
+      "3_regeneration": "Not applicable: no plugin payload import/refresh; the wholesale port tool is not executed.",
+      "4_hook_review": "Existing bridge, mappings and deferred set preserved byte-identically; no new hook boundary.",
+      "5_diff_review": "Only six fixtures, one test module, this scoped record and four documentation files.",
+      "6_portability": "Saga PORTABILITY describes test-only behavior and limits.",
+      "7_validation": "One targeted six-case pytest invocation, narrow Ruff lint/format checks and the real existing validator; prior 24 local cases not repeated. Full hosted candidate validation remains required.",
+      "8_install_verify": "Not applicable: no installed surface change; no installer, host restart or host-discovery command is executed or claimed.",
+      "9_cycle_record": "This record plus narrow matrix, README and CI-note updates; existing port records and installed manifest unchanged."
+    }
+  },
+  "preservation": {
+    "manifest": {
+      "path": "plugins/saga/manifest.json",
+      "sha256": "556b2019df20b2d342ede944db25c248eebb9cce50e197fa0f61e9c08df6c6e6",
+      "git_blob_oid": "1104f5674e921e877c3041475f8b2f7320c3e5e5",
+      "bytes": 18567,
+      "mode": "100644"
+    },
+    "lineage": {
+      "source_repo": "infiquetra/infiquetra-claude-plugins",
+      "source_commit": "972cc50ba8799d8d4663b893e008bb1bf318d4d7",
+      "source_version": "0.131.1",
+      "ported_at": "2026-08-13T20:45:39.721617+00:00"
+    },
+    "original_test_cases": 24,
+    "original_python_assert_sites": 81,
+    "original_test_files": {
+      "tests/saga-hooks-driver.ts": {
+        "sha256": "dd0b8bbab4cd5227692439cb905642daadb56e90bfd0574773907f4a58ffa7a7",
+        "git_blob_oid": "551497096faf1f14a8eff03ded849fc298e1918f",
+        "bytes": 2450,
+        "mode": "100644"
+      },
+      "tests/test_install.py": {
+        "sha256": "2308e74a20e301c5d0f5035b855619bdc851a59dfd4132571212c5ff28843589",
+        "git_blob_oid": "325845513a3dd88d477f0bbf893e2fdff1acea0e",
+        "bytes": 3438,
+        "mode": "100644"
+      },
+      "tests/test_port_plugin.py": {
+        "sha256": "78453583c4c389a6a39cc5639f5f147f9d6a8eb1918cf1fd2ff775c32d0e8d99",
+        "git_blob_oid": "485c8435281f6d3c8da9cc21a5384df40b68a170",
+        "bytes": 4692,
+        "mode": "100644"
+      },
+      "tests/test_saga_hooks.py": {
+        "sha256": "65a334ec4a3f21d03e73a65e5977642ee414144eeeb8729304d95418680bc531",
+        "git_blob_oid": "4834a395c7ca99941177f1b9e787f4e8ddd6db31",
+        "bytes": 1625,
+        "mode": "100644"
+      },
+      "tests/test_saga_v2_runtime.py": {
+        "sha256": "a66b2c0d0f1dd5d7c8373c8c88b8475261338a63e1c737d1332b6caa1e52f796",
+        "git_blob_oid": "e6da63fb31e2f1762eba16f5d76e218210522a43",
+        "bytes": 4754,
+        "mode": "100644"
+      },
+      "tests/test_validate.py": {
+        "sha256": "771e890ec7b3fa2060b558ebbcf1fc0c29f431fe620bcdf74a1c3fdce5ef6a3c",
+        "git_blob_oid": "931d89292d3272ca2e61e13a671434708db08a23",
+        "bytes": 6113,
+        "mode": "100644"
+      }
+    },
+    "unchanged": [
+      "all bundled scripts, hooks, references and runtime data",
+      "adapter-native bridge and hook manifest",
+      "installed skills, commands, agents and inventory",
+      "uv.lock and pyproject.toml",
+      ".github workflows",
+      "original five Python test modules and TypeScript driver"
+    ],
+    "documentation_exception": "plugins/saga/PORTABILITY.md is updated to record this scope; no executable or installed inventory artifact changes."
+  },
+  "validation_contract": {
+    "commands": [
+      "python -B -m pytest -vv tests/test_outcome_cross_runtime.py -p no:cacheprovider --basetemp=<owned-temp> --junitxml=<owned-evidence>",
+      "ruff check --no-cache tests/test_outcome_cross_runtime.py",
+      "ruff format --check --no-cache tests/test_outcome_cross_runtime.py",
+      "python -B scripts/validate_opencode_plugins.py"
+    ],
+    "environment": "Existing staged locked Python 3.12.3 environment; no installation or sync; isolated HOME/temp and no inherited credentials.",
+    "execution_receipts": "External OpenCode01 t14-opencode-neutral-fixtures evidence records commands, case outcomes, preservation and checked rollback.",
+    "full_hosted_expected_cases": 30,
+    "additional_controlled_cache_warm_run_required": false
+  },
+  "limits": [
+    "No peer-envelope CLI ingress or new host behavior.",
+    "RUNTIME_LABEL remains inherited as claude.",
+    "No assertion of authority transfer, protected handoff execution, GitHub reconstruction or host compatibility.",
+    "Stop/SubagentStop/transcript-dependent auditing remains deferred.",
+    "This cycle does not claim whole OpenCode01 completion."
+  ]
+}

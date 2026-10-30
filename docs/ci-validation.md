@@ -51,29 +51,30 @@ The local receipt records measured command times and every collected case outcom
 Existing source/tooling failures remain fatal; fixes require a separately owned
 prerequisite rather than test skips, bundled-payload edits or relaxed validation.
 
-## Neutral fixture follow-up
+## Neutral fixture conformance
 
-There is already a versioned neutral producer: the Claude Saga contract
-`plugins/saga/references/outcome-cross-runtime.md` and six JSON examples under
-`tests/fixtures/outcome-cross-runtime/v1/`. The Codex adapter owns a direct-port
-cycle and consumes the same fixture bytes in its golden round-trip and rejection
-tests. The OpenCode adapter bundles the contract reference but carries none of
-those fixtures and has no corresponding consumer tests in its five modules.
+The [fixture-only cycle](portability/ports/2026-10-30-saga-outcome-cross-runtime-fixtures.json)
+pins six unchanged Claude-owned `outcome-cross-runtime/v1` fixtures to
+`972cc50ba8799d8d4663b893e008bb1bf318d4d7`, the bundled Saga lineage. OpenCode owns
+`tests/test_outcome_cross_runtime.py`; Codex retains ownership of its own consumer.
+No fixture download or moving upstream oracle is used in CI.
 
-That overlap is a concrete reuse candidate, not authorization to transfer
-runtime implementations or silently refresh this adapter's lineage. A separate
-port cycle must select the producer revision and fixture digests, classify the
-OpenCode consumer behavior, record custody, and add adapter-owned conformance
-tests. The existing producer owns the contract and fixture vocabulary; OpenCode owns
-its pinned consumer and port-cycle evidence. Confirm the producer revision and
-published fixture digests before that consumer work; no new producer platform is
-needed. Keep native installer and hook execution tests alongside shared inputs.
-Frontmatter, tool/path rewriting and host-hook mapping expectations also remain
-adapter-owned. No new central platform or fixture download is needed for this
-gate, and adding it alone does not complete the neutral-fixture recommendation.
+The new module contributes exactly six cases: four original-byte canonical round trips
+through the bundled parser, validators and serializer, an unknown-field structural
+rejection, and a structurally valid future-version negotiation rejection. Discovery
+also asserts successful version-1 negotiation. Its isolated module loader restores
+import state. The existing 24 cases and host-dependent skips are unchanged; the full
+hosted candidate must collect all 30. Installer protection, transforms, inventory and
+hook execution assertions remain adapter-owned.
 
-Root owns review, hosted cold/warm qualification and observed required-check
-enforcement after a green candidate. This workflow does not change repository
-settings, publish artifacts for release consumption or prove host acceptance.
-Rollback removes this workflow and note; runtime, manifests, lock, lineage and
-existing tests retain their bytes.
+The callable contract seam already existed. The CLI still has no peer-envelope ingress,
+and golden fixtures do not prove negotiation at a host boundary, authority transfer,
+protected handoff execution or host compatibility. Manifest, version, lineage, runtime,
+lock and workflow/cache policy are unchanged. Regeneration and installed-host restart
+are not applicable to this test-data cycle and are not claimed as executed.
+
+Root owns review, full hosted validation of the new candidate and observed required-check
+enforcement. The fixture-only change needs no additional controlled cache warm-up run.
+Rollback of this cycle removes its six fixtures, test module and machine record and
+restores its four documentation changes. It preserves the existing workflow and original
+tests; completing the broader recommendation remains a separate acceptance decision.
