@@ -3,7 +3,8 @@
 `Adapter CI` adds one Linux job, `Adapter validation (Python 3.12)`, for pull
 requests and pushes to `main`. Repository permissions are read-only, checkout
 credentials are not persisted, and actions are pinned to immutable commits.
-Only replaced runs for the same PR cancel; main runs have independent groups.
+Only replaced runs for the same identified PR and workflow ref cancel; missing PR
+identity and non-PR runs use independent run-ID/attempt groups without cancellation.
 This remains an actively maintained source-of-truth adapter, as described in
 the README; the proof-port label does not imply retirement.
 
@@ -38,9 +39,17 @@ The job deadline is ten minutes; bootstrap has three minutes, pytest and mypy
 two each, and other commands one. Local command timings qualify these command
 bounds only; cold/warm hosted bootstrap and total job headroom still need
 measurement. Bash's `-e -o pipefail` preserves failures through diagnostic tees.
-JUnit preserves case outcomes and skips; up to four 64 KiB log tails accompany
-it in a seven-day artifact even on failure. No environment dump, home or plugin
+JUnit preserves case outcomes and skips; missing JUnit after a successful pytest
+command is fatal. Up to six 64 KiB log tails and a job-status note accompany it in
+a seven-day artifact attempted even on failure. The status note can survive early
+bootstrap failure without pretending tests ran. Upload failures or a wholly missing
+artifact fail the job; runner loss or force cancellation can prevent retention.
+No environment dump, home or plugin
 installation is uploaded. This adds compute; it makes no savings claim.
+
+The local receipt records measured command times and every collected case outcome.
+Existing source/tooling failures remain fatal; fixes require a separately owned
+prerequisite rather than test skips, bundled-payload edits or relaxed validation.
 
 ## Neutral fixture follow-up
 
@@ -55,7 +64,10 @@ That overlap is a concrete reuse candidate, not authorization to transfer
 runtime implementations or silently refresh this adapter's lineage. A separate
 port cycle must select the producer revision and fixture digests, classify the
 OpenCode consumer behavior, record custody, and add adapter-owned conformance
-tests. Keep native installer and hook execution tests alongside shared inputs.
+tests. The existing producer owns the contract and fixture vocabulary; OpenCode owns
+its pinned consumer and port-cycle evidence. Confirm the producer revision and
+published fixture digests before that consumer work; no new producer platform is
+needed. Keep native installer and hook execution tests alongside shared inputs.
 Frontmatter, tool/path rewriting and host-hook mapping expectations also remain
 adapter-owned. No new central platform or fixture download is needed for this
 gate, and adding it alone does not complete the neutral-fixture recommendation.
