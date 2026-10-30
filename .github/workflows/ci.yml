@@ -1,0 +1,115 @@
+name: Adapter CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  validate:
+    name: Adapter validation (Python 3.12)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Check declared validation inputs
+        timeout-minutes: 1
+        run: |
+          test -s uv.lock
+          test -s pyproject.toml
+          manifests=(plugins/*/manifest.json)
+          test -f "${manifests[0]}"
+
+      - name: Prepare isolated validation directories
+        timeout-minutes: 1
+        env:
+          CI_HOME: ${{ runner.temp }}/opencode-ci-home
+          DIAGNOSTICS: ${{ runner.temp }}/opencode-ci-diagnostics
+        run: |
+          mkdir -p "$CI_HOME" "$DIAGNOSTICS"
+          {
+            echo "HOME=$CI_HOME"
+            echo "XDG_CONFIG_HOME=$CI_HOME/.config"
+            echo "XDG_DATA_HOME=$CI_HOME/.local/share"
+            echo "XDG_CACHE_HOME=$CI_HOME/.cache"
+            echo "XDG_STATE_HOME=$CI_HOME/.local/state"
+            echo "PYTHONNOUSERSITE=1"
+            echo "PYTHONDONTWRITEBYTECODE=1"
+            echo "CI_DIAGNOSTICS=$DIAGNOSTICS"
+          } >> "$GITHUB_ENV"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5.4.2
+        timeout-minutes: 2
+        with:
+          version: "0.13.6"
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+          cache-suffix: uv-0.13.6-python-3.12
+          # Dependency data, metadata and source-built wheels; no installed environment.
+          cache-local-path: ${{ runner.temp }}/uv-cache
+          prune-cache: true
+
+      - name: Install Python and fresh locked development dependencies
+        timeout-minutes: 3
+        run: |
+          uv python install 3.12
+          uv venv --clear --python 3.12 .venv
+          uv sync --locked --python 3.12
+
+      - name: Validate plugin manifests and installed surface
+        timeout-minutes: 1
+        run: |
+          uv run --locked python scripts/validate_opencode_plugins.py 2>&1 | tee "$CI_DIAGNOSTICS/validator.log"
+
+      - name: Run the complete configured pytest suite
+        timeout-minutes: 2
+        run: |
+          uv run --locked python -m pytest -ra --durations=10 --junitxml="$CI_DIAGNOSTICS/pytest.xml" 2>&1 | tee "$CI_DIAGNOSTICS/pytest.log"
+
+      - name: Ruff
+        timeout-minutes: 1
+        run: |
+          uv run --locked python -m ruff check . 2>&1 | tee "$CI_DIAGNOSTICS/ruff.log"
+
+      - name: Mypy scripts
+        timeout-minutes: 2
+        run: |
+          uv run --locked python -m mypy scripts/ 2>&1 | tee "$CI_DIAGNOSTICS/mypy.log"
+
+      - name: Bound diagnostic log tails
+        if: always()
+        timeout-minutes: 1
+        run: |
+          for name in validator pytest ruff mypy; do
+            log="$CI_DIAGNOSTICS/$name.log"
+            if [[ -f "$log" ]]; then
+              tail -c 65536 "$log" > "$log.tail"
+            fi
+          done
+
+      - name: Retain validation diagnostics
+        if: always()
+        timeout-minutes: 1
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: opencode-adapter-validation
+          path: |
+            ${{ runner.temp }}/opencode-ci-diagnostics/pytest.xml
+            ${{ runner.temp }}/opencode-ci-diagnostics/*.log.tail
+          if-no-files-found: ignore
+          retention-days: 7
