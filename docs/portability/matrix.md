@@ -12,7 +12,7 @@ changes a plugin host boundary such as skills, scripts, MCP servers, command fil
 
 | Plugin | opencode Status | Reason | opencode Treatment |
 |---|---|---|---|
-| `saga` | proof-port | Lifecycle spine; richest surface (22 skills, 24 commands, 2 agents, 10 hooks) and the natural proof for all four surface types. | Ported in full: skills/commands/agents transformed, scripts/references/docs bundled, 9 hook bindings bridged; delegation stop-audit deferred (needs transcript). |
+| `saga` | proof-port | Lifecycle spine; richest surface (22 skills, 24 commands, 2 agents, 10 hooks) and the natural proof for all four surface types. | Ported in full: skills/commands/agents transformed, scripts/references/docs bundled, 9 hook bindings bridged; delegation stop-audit deferred (needs transcript). Six neutral Outcome fixture cases test the existing bundled seam; installed lineage is unchanged. |
 | `fleet-core` | deferred | Shared tier/effort policy library consumed by saga via its bundled shim. Saga already carries `fleet_commons_shim.py`; a standalone fleet-core port adds nothing until another plugin needs it. | Port when a consumer plugin's scripts cannot load through their own shim. |
 | `deploy` | deferred | Tag-promotion deploy with mutation gates; needs a proof that the skill-plus-script payload and its confirmation gates behave under opencode before activation. | Next proof-port candidate after saga settles. |
 | `mission-control` | deferred | SDLC board/issue manager (CLI-backed skills). Portable surface, but board mutation paths need dry-run/preview review under opencode. | Port with confirmation gates; scripts are already repo-relative. |
@@ -27,6 +27,11 @@ changes a plugin host boundary such as skills, scripts, MCP servers, command fil
 
 ## Notes
 
+- 2026-10-30: the [fixture-only cycle](ports/2026-10-30-saga-outcome-cross-runtime-fixtures.json)
+  imports six producer-owned `outcome-cross-runtime/v1` examples from the existing
+  `972cc50ba8799d8d4663b893e008bb1bf318d4d7` lineage. Adapter tests cover four canonical
+  round trips, unknown-field rejection and future-version negotiation rejection, with a
+  version-1 negotiation control. This is test-data coverage, not a runtime refresh or host proof.
 - 2026-10-27: the Saga bridge supports both OpenCode 1's `server()` entrypoint
   and OpenCode 2's `setup()` hook domains. OpenCode 2 may load the location
   plugin after session creation; first activity also triggers the idempotent

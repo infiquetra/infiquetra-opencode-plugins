@@ -9,6 +9,10 @@ plugin surface, currently:
 |---|---:|---|
 | `saga` | 0.131.1+opencode | proof-port |
 
+Saga's six pinned neutral fixture cases exercise the bundled Outcome contract through
+adapter-owned tests. The [fixture-only cycle](docs/portability/ports/2026-10-30-saga-outcome-cross-runtime-fixtures.json)
+records producer custody and unchanged installed lineage; it adds no peer-envelope or host behavior.
+
 `saga` is the lifecycle spine (Think, Plan & execute, Hand off, Review, Improve & route) and the
 proof port for the full surface: skills, commands, agents, and the hook bridge. Other Claude
 plugins are classified in `docs/portability/matrix.md` and ported on demand.
